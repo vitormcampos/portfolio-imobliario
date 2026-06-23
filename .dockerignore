@@ -1,0 +1,33 @@
+# Dependências
+node_modules
+
+# Build output
+dist
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Documentação e arquivos de ambiente
+README.md
+*.md
+.env
+.env.local
+.env.*.local
+
+# IDE / OS
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
