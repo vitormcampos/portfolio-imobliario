@@ -1,0 +1,111 @@
+<app-header />
+<main id="main-content">
+  <!-- Page Header -->
+  <section class="imoveis-header">
+    <div class="container">
+      <h1 class="imoveis-header__title">Imóveis Disponíveis</h1>
+      <p class="imoveis-header__subtitle">
+        Confira nossa seleção completa de imóveis para venda e aluguel.
+      </p>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="imoveis-filters" appReveal>
+    <div class="container">
+      <div class="imoveis-filters__card">
+        <div class="imoveis-filters__grid">
+          <div class="imoveis-filters__field">
+            <label for="filter-tipo" class="imoveis-filters__label">Tipo</label>
+            <select
+              id="filter-tipo"
+              class="imoveis-filters__select"
+              [(ngModel)]="filters.tipo"
+              (change)="applyFilters()"
+            >
+              <option value="">Todos</option>
+              <option value="casa">Casa</option>
+              <option value="apartamento">Apartamento</option>
+              <option value="comercial">Comercial</option>
+              <option value="terreno">Terreno</option>
+            </select>
+          </div>
+          <div class="imoveis-filters__field">
+            <label for="filter-cidade" class="imoveis-filters__label">Cidade</label>
+            <select
+              id="filter-cidade"
+              class="imoveis-filters__select"
+              [(ngModel)]="filters.cidade"
+              (change)="applyFilters()"
+            >
+              <option value="">Todas</option>
+              <option *ngFor="let c of cidades" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+          <div class="imoveis-filters__field">
+            <label for="filter-finalidade" class="imoveis-filters__label">Finalidade</label>
+            <select
+              id="filter-finalidade"
+              class="imoveis-filters__select"
+              [(ngModel)]="filters.finalidade"
+              (change)="applyFilters()"
+            >
+              <option value="">Todas</option>
+              <option value="venda">Venda</option>
+              <option value="aluguel">Aluguel</option>
+            </select>
+          </div>
+          <div class="imoveis-filters__field">
+            <label for="filter-quartos" class="imoveis-filters__label">Quartos</label>
+            <select
+              id="filter-quartos"
+              class="imoveis-filters__select"
+              [(ngModel)]="filters.quartos"
+              (change)="applyFilters()"
+            >
+              <option value="">Qualquer</option>
+              <option value="1">1+</option>
+              <option value="2">2+</option>
+              <option value="3">3+</option>
+              <option value="4">4+</option>
+            </select>
+          </div>
+          <div class="imoveis-filters__action">
+            <button class="imoveis-filters__btn imoveis-filters__btn--clear" (click)="clearFilters()" aria-label="Limpar filtros">
+              <i data-feather="x" aria-hidden="true"></i>
+              Limpar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="imoveis-results">
+    <div class="container">
+      <div class="imoveis-results__count">
+        <p>
+          {{ filteredImoveis.length }} imóvel{{ filteredImoveis.length !== 1 ? 'is' : '' }} encontrado{{ filteredImoveis.length !== 1 ? 's' : '' }}
+        </p>
+      </div>
+      <div class="imoveis-results__grid">
+        <div
+          *ngFor="let imovel of filteredImoveis; let i = index"
+          appReveal
+          [appRevealDelay]="100 * i"
+        >
+          <app-property-card [imovel]="imovel" />
+        </div>
+      </div>
+      <div class="imoveis-results__empty" *ngIf="filteredImoveis.length === 0">
+        <i data-feather="search" aria-hidden="true"></i>
+        <h3>Nenhum imóvel encontrado</h3>
+        <p>Tente ajustar os filtros para encontrar mais opções.</p>
+        <button class="imoveis-filters__btn" (click)="clearFilters()">Limpar Filtros</button>
+      </div>
+    </div>
+  </section>
+</main>
+<app-footer />
+<app-whatsapp-button />

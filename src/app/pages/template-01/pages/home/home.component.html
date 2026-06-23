@@ -1,0 +1,281 @@
+<app-header />
+<main id="main-content">
+  <!-- ===================== HERO SECTION ===================== -->
+  <section class="hero">
+    <div
+      class="hero__bg"
+      [style.background-image]="'url(' + heroImages[currentHeroIndex] + ')'"
+    ></div>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <h1 class="hero__title" appReveal [appRevealDelay]="200">
+        {{ site.slogan || 'Encontre o imóvel dos seus sonhos' }}
+      </h1>
+      <p class="hero__subtitle" appReveal [appRevealDelay]="400">
+        Há mais de 20 anos realizando sonhos em Cuiabá e região com imóveis que combinam qualidade, conforto e o melhor custo-benefício.
+      </p>
+      <a
+        routerLink="/template-01/imoveis"
+        class="hero__cta"
+        appReveal
+        [appRevealDelay]="600"
+      >
+        Ver Imóveis
+        <i data-feather="arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== SEARCH SECTION ===================== -->
+  <section class="search-section" appReveal>
+    <div class="container">
+      <div class="search-card">
+        <div class="search-card__grid">
+          <div class="search-card__field">
+            <label for="search-tipo" class="search-card__label">Tipo</label>
+            <select
+              id="search-tipo"
+              class="search-card__select"
+              [(ngModel)]="searchForm.tipo"
+            >
+              <option value="">Todos</option>
+              <option value="casa">Casa</option>
+              <option value="apartamento">Apartamento</option>
+              <option value="comercial">Comercial</option>
+              <option value="terreno">Terreno</option>
+            </select>
+          </div>
+          <div class="search-card__field">
+            <label for="search-cidade" class="search-card__label">Cidade</label>
+            <select
+              id="search-cidade"
+              class="search-card__select"
+              [(ngModel)]="searchForm.cidade"
+            >
+              <option value="">Todas</option>
+              <option value="São Paulo">São Paulo</option>
+              <option value="Barueri">Barueri</option>
+              <option value="Cotia">Cotia</option>
+              <option value="Osasco">Osasco</option>
+              <option value="Santos">Santos</option>
+            </select>
+          </div>
+          <div class="search-card__field">
+            <label for="search-finalidade" class="search-card__label">Finalidade</label>
+            <select
+              id="search-finalidade"
+              class="search-card__select"
+              [(ngModel)]="searchForm.finalidade"
+            >
+              <option value="">Todas</option>
+              <option value="venda">Venda</option>
+              <option value="aluguel">Aluguel</option>
+            </select>
+          </div>
+          <div class="search-card__field">
+            <label for="search-quartos" class="search-card__label">Quartos</label>
+            <select
+              id="search-quartos"
+              class="search-card__select"
+              [(ngModel)]="searchForm.quartos"
+            >
+              <option value="">Qualquer</option>
+              <option value="1">1+</option>
+              <option value="2">2+</option>
+              <option value="3">3+</option>
+              <option value="4">4+</option>
+            </select>
+          </div>
+          <div class="search-card__action">
+            <button class="search-card__btn" (click)="onSearch()" aria-label="Buscar imóveis">
+              <i data-feather="search" aria-hidden="true"></i>
+              Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DIFERENCIAIS SECTION ===================== -->
+  <section class="diferenciais" appReveal>
+    <div class="container">
+      <div class="section-title">
+        <h2>Por que escolher a Visa Imóveis</h2>
+        <p>Nossa experiência e compromisso fazem toda a diferença na sua jornada imobiliária.</p>
+      </div>
+      <div class="diferenciais__grid">
+        <div
+          *ngFor="let diff of diferenciais; let i = index"
+          class="diferenciais__card"
+          appReveal
+          [appRevealDelay]="200 * (i + 1)"
+        >
+          <div class="diferenciais__icon">
+            <i [attr.data-feather]="diff.icon" aria-hidden="true"></i>
+          </div>
+          <h3 class="diferenciais__title">{{ diff.title }}</h3>
+          <p class="diferenciais__desc">{{ diff.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DESTAQUES SECTION ===================== -->
+  <section class="destaques" appReveal>
+    <div class="container">
+      <div class="section-title">
+        <h2>Imóveis em Destaque</h2>
+        <p>Selecionamos as melhores opções para você encontrar o lar perfeito.</p>
+      </div>
+      <div class="destaques__grid">
+        <div
+          *ngFor="let imovel of destaques; let i = index"
+          appReveal
+          [appRevealDelay]="100 * i"
+        >
+          <app-property-card [imovel]="imovel" />
+        </div>
+      </div>
+      <div class="destaques__action">
+        <a routerLink="/template-01/imoveis" class="btn btn--outline">
+          Ver Todos os Imóveis
+          <i data-feather="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PARCEIROS SECTION ===================== -->
+  <section class="parceiros" appReveal>
+    <div class="container">
+      <div class="section-title">
+        <h2>Parceiros e Certificações</h2>
+        <p>Reconhecimento e parcerias que garantem a qualidade dos nossos serviços.</p>
+      </div>
+      <div class="parceiros__slider" uk-slider="autoplay: true; autoplay-interval: 3000; pause-on-hover: true">
+        <div class="uk-slider-container">
+          <ul class="uk-slider-items uk-child-width-1-3 uk-child-width-1-4@s uk-child-width-1-6@m uk-grid-small uk-flex-middle">
+            <li *ngFor="let partner of partnerLogos">
+              <div class="parceiros__item">
+                <i [attr.data-feather]="partner.svg" aria-hidden="true"></i>
+                <span>{{ partner.name }}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <ul class="uk-slider-nav uk-dotnav uk-flex-center uk-margin"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTATO CTA SECTION ===================== -->
+  <section class="contato-cta" appReveal>
+    <div class="container">
+      <div class="contato-cta__grid">
+        <div class="contato-cta__form-wrapper">
+          <h2 class="contato-cta__title">Vamos conversar?</h2>
+          <p class="contato-cta__subtitle">
+            Preencha o formulário abaixo e entraremos em contato o mais rápido possível.
+          </p>
+          <form class="contato-cta__form" (submit)="submitContato($event)">
+            <div class="contato-cta__field">
+              <label for="cta-nome" class="contato-cta__label">Nome</label>
+              <input
+                id="cta-nome"
+                type="text"
+                class="contato-cta__input"
+                placeholder="Seu nome"
+                required
+              />
+            </div>
+            <div class="contato-cta__field">
+              <label for="cta-email" class="contato-cta__label">E-mail</label>
+              <input
+                id="cta-email"
+                type="email"
+                class="contato-cta__input"
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
+            <div class="contato-cta__field">
+              <label for="cta-telefone" class="contato-cta__label">Telefone</label>
+              <input
+                id="cta-telefone"
+                type="tel"
+                class="contato-cta__input"
+                placeholder="(65) 99999-9999"
+              />
+            </div>
+            <div class="contato-cta__field contato-cta__field--full">
+              <label for="cta-mensagem" class="contato-cta__label">Mensagem</label>
+              <textarea
+                id="cta-mensagem"
+                class="contato-cta__textarea"
+                placeholder="Como podemos ajudar?"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="contato-cta__btn">
+              Enviar Mensagem
+              <i data-feather="send" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+        <div class="contato-cta__info">
+          <div class="contato-cta__info-card">
+            <div class="contato-cta__info-item">
+              <i data-feather="map-pin" aria-hidden="true"></i>
+              <div>
+                <strong>Endereço</strong>
+                <p>{{ site.endereco }}</p>
+              </div>
+            </div>
+            <div class="contato-cta__info-item">
+              <i data-feather="phone" aria-hidden="true"></i>
+              <div>
+                <strong>Telefone</strong>
+                <p>{{ site.telefone }}</p>
+              </div>
+            </div>
+            <div class="contato-cta__info-item">
+              <i data-feather="smartphone" aria-hidden="true"></i>
+              <div>
+                <strong>WhatsApp</strong>
+                <p>{{ site.celular }}</p>
+              </div>
+            </div>
+            <div class="contato-cta__info-item">
+              <i data-feather="mail" aria-hidden="true"></i>
+              <div>
+                <strong>E-mail</strong>
+                <p>{{ site.email }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="contato-cta__social">
+            <a [href]="site.urlWhatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="contato-cta__social-link">
+              <i data-feather="message-circle"></i>
+            </a>
+            <a [href]="site.urlInstagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="contato-cta__social-link">
+              <i data-feather="instagram"></i>
+            </a>
+            <a [href]="site.urlFacebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="contato-cta__social-link">
+              <i data-feather="facebook"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast notification -->
+  <div class="toast" [class.toast--visible]="toastVisible" role="alert" aria-live="polite">
+    <i data-feather="check-circle" aria-hidden="true"></i>
+    <span>Mensagem enviada com sucesso! Entraremos em contato em breve.</span>
+  </div>
+</main>
+<app-footer />
+<app-whatsapp-button />

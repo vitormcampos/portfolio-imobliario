@@ -1,0 +1,472 @@
+/* =============================================
+   Imóvel Detail Page Styles
+   ============================================= */
+
+/* Header contrast scrim */
+.imovel-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 26, 48, 0.95) 0%,
+    rgba(15, 26, 48, 0.8) 35%,
+    rgba(15, 26, 48, 0.4) 70%,
+    transparent 100%
+  );
+  z-index: 999;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity var(--transition-base);
+}
+
+:host-context(.header-scrolled) .imovel-page::before {
+  opacity: 0;
+}
+
+/* Breadcrumb */
+.imovel-breadcrumb {
+  padding: 120px 0 16px;
+  background: var(--color-bg);
+  font-size: 0.85rem;
+}
+
+.imovel-breadcrumb a {
+  color: var(--color-text-light);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.imovel-breadcrumb a:hover {
+  color: var(--color-accent);
+}
+
+.imovel-breadcrumb__sep {
+  margin: 0 8px;
+  color: var(--color-border);
+}
+
+.imovel-breadcrumb span:last-child {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* Gallery */
+.imovel-gallery {
+  padding: 16px 0 32px;
+}
+
+.imovel-gallery__slider {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.imovel-gallery__img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+.imovel-gallery__slider a i {
+  width: 32px;
+  height: 32px;
+  color: var(--color-white);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Thumbnails */
+.imovel-gallery__thumbs {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.imovel-gallery__thumb {
+  width: 80px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  flex-shrink: 0;
+  border: 2px solid transparent;
+}
+
+.imovel-gallery__thumb:hover {
+  opacity: 0.8;
+}
+
+.imovel-gallery__thumb--active {
+  opacity: 1;
+  border-color: var(--color-accent);
+}
+
+.imovel-gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Details Section */
+.imovel-details {
+  padding: 32px 0 48px;
+}
+
+.imovel-details__grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 40px;
+}
+
+/* Header */
+.imovel-details__badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.imovel-details__badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.imovel-details__badge--tipo {
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+}
+
+.imovel-details__badge--venda {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.imovel-details__badge--aluguel {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.imovel-details__title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.imovel-details__location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: var(--color-text-light);
+  margin-bottom: 24px;
+}
+
+.imovel-details__location i {
+  width: 16px;
+  height: 16px;
+  color: var(--color-accent);
+}
+
+/* Price */
+.imovel-details__price-box {
+  background: var(--color-bg-alt);
+  padding: 20px 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.imovel-details__price-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.imovel-details__price {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.imovel-details__condominio {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin-top: 4px;
+}
+
+/* Features Grid */
+.imovel-details__features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.imovel-details__feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.imovel-details__feature i {
+  width: 24px;
+  height: 24px;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.imovel-details__feature strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.imovel-details__feature span {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+/* Description */
+.imovel-details__description {
+  margin-bottom: 32px;
+}
+
+.imovel-details__description h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.imovel-details__description p {
+  color: var(--color-text);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+/* CTA */
+.imovel-details__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #25D366;
+  color: var(--color-white);
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.imovel-details__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.35);
+  color: var(--color-white);
+}
+
+.imovel-details__cta i {
+  width: 20px;
+  height: 20px;
+}
+
+/* Sidebar */
+.imovel-details__sidebar-card {
+  background: var(--color-white);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 100px;
+}
+
+.imovel-details__sidebar-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.imovel-details__sidebar-card p {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin-bottom: 20px;
+}
+
+.imovel-details__sidebar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: #25D366;
+  color: var(--color-white);
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform var(--transition-fast);
+  margin-bottom: 20px;
+}
+
+.imovel-details__sidebar-btn:hover {
+  transform: translateY(-2px);
+  color: var(--color-white);
+}
+
+.imovel-details__sidebar-btn i {
+  width: 18px;
+  height: 18px;
+}
+
+.imovel-details__sidebar-contacts p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin-bottom: 8px;
+}
+
+.imovel-details__sidebar-contacts i {
+  width: 14px;
+  height: 14px;
+  color: var(--color-accent);
+}
+
+/* Map */
+.imovel-map {
+  padding: 48px 0;
+  background: var(--color-bg-alt);
+}
+
+.imovel-map__title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 24px;
+}
+
+.imovel-map__container {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.imovel-map__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 80px 20px;
+  background: var(--color-white);
+  text-align: center;
+}
+
+.imovel-map__placeholder i {
+  width: 48px;
+  height: 48px;
+  color: var(--color-accent);
+}
+
+.imovel-map__placeholder p {
+  font-size: 0.95rem;
+  color: var(--color-text-light);
+  max-width: 400px;
+}
+
+/* Related */
+.imovel-relacionados {
+  padding: 60px 0;
+}
+
+.imovel-relacionados__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Not found */
+.imovel-notfound {
+  padding: 200px 0 100px;
+  text-align: center;
+}
+
+.imovel-notfound i {
+  width: 64px;
+  height: 64px;
+  color: var(--color-text-light);
+  margin-bottom: 16px;
+}
+
+.imovel-notfound h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.imovel-notfound p {
+  color: var(--color-text-light);
+  margin-bottom: 24px;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .imovel-details__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .imovel-relacionados__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .imovel-gallery__img {
+    height: 350px;
+  }
+}
+
+@media (max-width: 576px) {
+  .imovel-details__title {
+    font-size: 1.5rem;
+  }
+
+  .imovel-details__features {
+    grid-template-columns: 1fr;
+  }
+
+  .imovel-relacionados__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .imovel-gallery__img {
+    height: 250px;
+  }
+}

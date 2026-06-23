@@ -1,0 +1,226 @@
+<app-header />
+<main id="main-content" class="imovel-page">
+  <ng-container *ngIf="imovel; else notFound">
+    <!-- Breadcrumb -->
+    <div class="imovel-breadcrumb">
+      <div class="container">
+        <a routerLink="/template-01">Início</a>
+        <span class="imovel-breadcrumb__sep">/</span>
+        <a routerLink="/template-01/imoveis">Imóveis</a>
+        <span class="imovel-breadcrumb__sep">/</span>
+        <span>{{ imovel.titulo }}</span>
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <section class="imovel-gallery" appReveal>
+      <div class="container">
+        <div class="imovel-gallery__main">
+          <div class="imovel-gallery__slider" uk-slideshow="animation: slide; autoplay: true; autoplay-interval: 4000; pause-on-hover: true">
+            <div class="uk-position-relative uk-visible-toggle">
+              <ul class="uk-slideshow-items">
+                <li *ngFor="let foto of imovel.fotos; let i = index">
+                  <img
+                    [src]="foto"
+                    [alt]="imovel.titulo + ' - Foto ' + (i + 1)"
+                    loading="lazy"
+                    class="imovel-gallery__img"
+                  />
+                </li>
+              </ul>
+              <a
+                class="uk-position-center-left uk-position-small uk-hidden-hover"
+                href="javascript:void(0)"
+                uk-slideshow-item="previous"
+                role="button"
+                aria-label="Foto anterior"
+              >
+                <i data-feather="chevron-left" aria-hidden="true"></i>
+              </a>
+              <a
+                class="uk-position-center-right uk-position-small uk-hidden-hover"
+                href="javascript:void(0)"
+                uk-slideshow-item="next"
+                role="button"
+                aria-label="Próxima foto"
+              >
+                <i data-feather="chevron-right" aria-hidden="true"></i>
+              </a>
+            </div>
+            <ul class="uk-slideshow-nav uk-dotnav uk-flex-center uk-margin"></ul>
+          </div>
+        </div>
+        <div class="imovel-gallery__thumbs">
+          <div
+            *ngFor="let foto of imovel.fotos; let i = index"
+            class="imovel-gallery__thumb"
+            [class.imovel-gallery__thumb--active]="i === currentSlide"
+            (click)="goToSlide(i)"
+          >
+            <img [src]="foto" [alt]="imovel.titulo + ' - Miniatura ' + (i + 1)" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Details -->
+    <section class="imovel-details" appReveal>
+      <div class="container">
+        <div class="imovel-details__grid">
+          <div class="imovel-details__content">
+            <div class="imovel-details__header">
+              <div class="imovel-details__badges">
+                <span class="imovel-details__badge imovel-details__badge--tipo">
+                  {{ getTipoLabel() }}
+                </span>
+                <span
+                  class="imovel-details__badge"
+                  [class.imovel-details__badge--venda]="imovel.finalidade === 'venda'"
+                  [class.imovel-details__badge--aluguel]="imovel.finalidade === 'aluguel'"
+                >
+                  {{ getFinalidadeLabel() }}
+                </span>
+              </div>
+              <h1 class="imovel-details__title">{{ imovel.titulo }}</h1>
+              <p class="imovel-details__location">
+                <i data-feather="map-pin" aria-hidden="true"></i>
+                {{ imovel.endereco }}, {{ imovel.cidade }} - {{ imovel.estado }}
+              </p>
+            </div>
+
+            <div class="imovel-details__price-box">
+              <span class="imovel-details__price-label">Preço</span>
+              <span class="imovel-details__price">
+                {{ imovel.finalidade === 'aluguel' ? (imovel.preco | currency:'BRL':'symbol':'1.0-0') + '/mês' : imovel.preco | currency:'BRL':'symbol':'1.0-0' }}
+              </span>
+              <span *ngIf="imovel.condominio" class="imovel-details__condominio">
+                + Condomínio: {{ imovel.condominio | currency:'BRL':'symbol':'1.0-0' }}
+              </span>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="imovel-details__features">
+              <div class="imovel-details__feature">
+                <i data-feather="maximize" aria-hidden="true"></i>
+                <div>
+                  <strong>{{ imovel.area }}m²</strong>
+                  <span>Área total</span>
+                </div>
+              </div>
+              <div class="imovel-details__feature" *ngIf="imovel.quartos > 0">
+                <i data-feather="bed" aria-hidden="true"></i>
+                <div>
+                  <strong>{{ imovel.quartos }} quarto{{ imovel.quartos > 1 ? 's' : '' }}</strong>
+                  <span>Dormitórios</span>
+                </div>
+              </div>
+              <div class="imovel-details__feature">
+                <i data-feather="shower" aria-hidden="true"></i>
+                <div>
+                  <strong>{{ imovel.banheiros }} banheiro{{ imovel.banheiros > 1 ? 's' : '' }}</strong>
+                  <span>Banheiros</span>
+                </div>
+              </div>
+              <div class="imovel-details__feature" *ngIf="imovel.vagas > 0">
+                <i data-feather="briefcase" aria-hidden="true"></i>
+                <div>
+                  <strong>{{ imovel.vagas }} vaga{{ imovel.vagas > 1 ? 's' : '' }}</strong>
+                  <span>Vagas</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="imovel-details__description">
+              <h2>Descrição do Imóvel</h2>
+              <p>{{ imovel.descricao }}</p>
+            </div>
+
+            <!-- CTA -->
+            <a
+              [href]="getWhatsAppUrl()"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="imovel-details__cta"
+            >
+              <i data-feather="message-circle" aria-hidden="true"></i>
+              Agendar Visita
+            </a>
+          </div>
+
+          <!-- Sidebar -->
+          <aside class="imovel-details__sidebar">
+            <div class="imovel-details__sidebar-card">
+              <h3>Tem interesse neste imóvel?</h3>
+              <p>Entre em contato conosco e agende uma visita.</p>
+              <a
+                [href]="getWhatsAppUrl()"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="imovel-details__sidebar-btn"
+              >
+                <i data-feather="message-circle" aria-hidden="true"></i>
+                Fale Conosco
+              </a>
+              <div class="imovel-details__sidebar-contacts">
+                <p><i data-feather="phone" aria-hidden="true"></i> {{ site.telefone }}</p>
+                <p><i data-feather="mail" aria-hidden="true"></i> {{ site.email }}</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Placeholder -->
+    <section class="imovel-map" appReveal>
+      <div class="container">
+        <h2 class="imovel-map__title">Localização</h2>
+        <div class="imovel-map__container">
+          <iframe
+            [src]="getMapUrl()"
+            width="100%"
+            height="400"
+            style="border:0; border-radius: 16px;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            [title]="'Localização do imóvel ' + imovel.titulo"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Properties -->
+    <section class="imovel-relacionados" appReveal *ngIf="relacionados.length > 0">
+      <div class="container">
+        <div class="section-title">
+          <h2>Imóveis Relacionados</h2>
+          <p>Você também pode gostar destas opções.</p>
+        </div>
+        <div class="imovel-relacionados__grid">
+          <div
+            *ngFor="let rel of relacionados; let i = index"
+            appReveal
+            [appRevealDelay]="100 * i"
+          >
+            <app-property-card [imovel]="rel" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+
+  <ng-template #notFound>
+    <div class="imovel-notfound">
+      <div class="container">
+        <i data-feather="alert-circle" aria-hidden="true"></i>
+        <h1>Imóvel não encontrado</h1>
+        <p>O imóvel que você procura não está disponível ou foi removido.</p>
+        <a routerLink="/template-01/imoveis" class="btn-primary">Ver Todos os Imóveis</a>
+      </div>
+    </div>
+  </ng-template>
+</main>
+<app-footer />
+<app-whatsapp-button />
