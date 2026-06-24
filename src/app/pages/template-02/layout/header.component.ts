@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, HostListener, OnInit, AfterViewInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SiteService } from '../../../shared/services/site.service';
 import { Site } from '../../../shared/models/site.model';
@@ -11,10 +11,9 @@ import { FeatherService } from '../../../shared/services/feather.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
+export class HeaderComponent implements OnInit, AfterViewInit {
   site!: Site;
   isScrolled = false;
-  isMobileMenuOpen = false;
 
   constructor(
     private siteService: SiteService,
@@ -34,22 +33,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isScrolled = window.scrollY > 50;
   }
 
-  toggleMobileMenu(): void {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
-  }
-
-  closeMobileMenu(): void {
-    this.isMobileMenuOpen = false;
-    document.body.style.overflow = '';
-  }
-
   onLogoError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.style.display = 'none';
-  }
-
-  ngOnDestroy(): void {
-    document.body.style.overflow = '';
   }
 }

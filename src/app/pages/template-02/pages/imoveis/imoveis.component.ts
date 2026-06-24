@@ -34,11 +34,10 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
   filteredImoveis: Imovel[] = [];
 
   filters = {
-    finalidade: '',
     tipo: '',
     bairro: '',
     quartos: '',
-    vagas: '',
+    valor: '',
   };
 
   bairros: string[] = [];
@@ -55,11 +54,10 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
     this.bairros = [...new Set(this.allImoveis.map((i) => i.cidade))].sort();
 
     this.route.queryParams.subscribe((params) => {
-      this.filters.finalidade = params['finalidade'] || '';
       this.filters.tipo = params['tipo'] || '';
       this.filters.bairro = params['cidade'] || '';
       this.filters.quartos = params['quartos'] || '';
-      this.filters.vagas = params['vagas'] || '';
+      this.filters.valor = params['valor'] || '';
       this.applyFilters();
     });
   }
@@ -76,9 +74,6 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
   applyFilters(): void {
     let result = [...this.allImoveis];
 
-    if (this.filters.finalidade) {
-      result = result.filter((i) => i.finalidade === this.filters.finalidade);
-    }
     if (this.filters.tipo) {
       result = result.filter((i) => i.tipo === this.filters.tipo);
     }
@@ -93,10 +88,10 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
         result = result.filter((i) => i.quartos >= minQuartos);
       }
     }
-    if (this.filters.vagas) {
-      const minVagas = parseInt(this.filters.vagas, 10);
-      if (!isNaN(minVagas)) {
-        result = result.filter((i) => i.vagas >= minVagas);
+    if (this.filters.valor) {
+      const maxValor = parseInt(this.filters.valor, 10);
+      if (!isNaN(maxValor)) {
+        result = result.filter((i) => i.preco <= maxValor);
       }
     }
 
@@ -112,11 +107,10 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
 
   clearFilters(): void {
     this.filters = {
-      finalidade: '',
       tipo: '',
       bairro: '',
       quartos: '',
-      vagas: '',
+      valor: '',
     };
     this.router.navigate([], {
       relativeTo: this.route,
@@ -134,11 +128,10 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
 
   private getQueryParams(): Record<string, string> {
     const params: Record<string, string> = {};
-    if (this.filters.finalidade) params['finalidade'] = this.filters.finalidade;
     if (this.filters.tipo) params['tipo'] = this.filters.tipo;
     if (this.filters.bairro) params['cidade'] = this.filters.bairro;
     if (this.filters.quartos) params['quartos'] = this.filters.quartos;
-    if (this.filters.vagas) params['vagas'] = this.filters.vagas;
+    if (this.filters.valor) params['valor'] = this.filters.valor;
     return params;
   }
 }
