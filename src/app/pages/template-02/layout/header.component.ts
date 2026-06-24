@@ -1,36 +1,34 @@
-import { Component, HostListener, OnInit, AfterViewInit } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, afterNextRender, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SiteService } from '../../../shared/services/site.service';
-import { Site } from '../../../shared/models/site.model';
 import { FeatherService } from '../../../shared/services/feather.service';
 
 @Component({
   selector: 'app-template02-header',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
+  host: {
+    '(window:scroll)': 'onWindowScroll()',
+  },
 })
-export class HeaderComponent implements OnInit, AfterViewInit {
-  site!: Site;
-  isScrolled = false;
+export class HeaderComponent {
+  private readonly siteService = inject(SiteService);
+  private readonly featherService = inject(FeatherService);
 
-  constructor(
-    private siteService: SiteService,
-    private featherService: FeatherService
-  ) {}
+  protected readonly site = this.siteService.site;
+  protected readonly isScrolled = signal(false);
 
-  ngOnInit(): void {
-    this.site = this.siteService.getSite();
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
   }
 
-  ngAfterViewInit(): void {
-    this.featherService.replace();
-  }
-
-  @HostListener('window:scroll', [])
   onWindowScroll(): void {
-    this.isScrolled = window.scrollY > 50;
+    this.isScrolled.set(window.scrollY > 50);
   }
 
   onLogoError(event: Event): void {

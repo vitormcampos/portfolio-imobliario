@@ -1,47 +1,55 @@
-<div class="property-card" [class.property-card--destaque]="imovel.destaque">
+<div class="property-card" [class.property-card--destaque]="imovel().destaque">
   <div class="property-card__image">
     <img
-      [src]="imovel.fotos[0]"
-      [alt]="imovel.titulo"
+      [src]="imovel().fotos[0]"
+      [alt]="imovel().titulo"
       loading="lazy"
       class="property-card__img"
     />
     <div class="property-card__price-overlay">
       <span class="property-card__price">
-        {{ isAluguel() ? (imovel.preco | currency:'BRL':'symbol':'1.0-0') + '/mês' : (imovel.preco | currency:'BRL':'symbol':'1.0-0') }}
+        {{ isAluguel() ? (imovel().preco | currency:'BRL':'symbol':'1.0-0') + '/mês' : (imovel().preco | currency:'BRL':'symbol':'1.0-0') }}
       </span>
     </div>
-    <span class="property-card__badge" *ngIf="imovel.destaque">
-      <i data-feather="star" aria-hidden="true"></i>
-      Destaque
-    </span>
+    @if (imovel().destaque) {
+      <span class="property-card__badge">
+        <i data-feather="star" aria-hidden="true"></i>
+        Destaque
+      </span>
+    }
   </div>
   <div class="property-card__body">
-    <h3 class="property-card__title">{{ imovel.titulo }}</h3>
+    <h3 class="property-card__title">{{ imovel().titulo }}</h3>
     <p class="property-card__location">
       <i data-feather="map-pin" aria-hidden="true"></i>
-      {{ imovel.cidade }}, {{ imovel.estado }}
+      {{ imovel().cidade }}, {{ imovel().estado }}
     </p>
     <div class="property-card__features">
-      <span class="property-card__feature" *ngIf="imovel.quartos > 0">
-        <i data-feather="bed" aria-hidden="true"></i>
-        {{ imovel.quartos }} quarto{{ imovel.quartos > 1 ? 's' : '' }}
-      </span>
-      <span class="property-card__feature" *ngIf="imovel.banheiros > 0">
-        <i data-feather="shower" aria-hidden="true"></i>
-        {{ imovel.banheiros }} banheiro{{ imovel.banheiros > 1 ? 's' : '' }}
-      </span>
+      @if (imovel().quartos > 0) {
+        <span class="property-card__feature">
+          <i data-feather="bed" aria-hidden="true"></i>
+          {{ imovel().quartos }} quarto{{ imovel().quartos > 1 ? 's' : '' }}
+        </span>
+      }
+      @if (imovel().banheiros > 0) {
+        <span class="property-card__feature">
+          <i data-feather="shower" aria-hidden="true"></i>
+          {{ imovel().banheiros }} banheiro{{ imovel().banheiros > 1 ? 's' : '' }}
+        </span>
+      }
       <span class="property-card__feature">
         <i data-feather="maximize" aria-hidden="true"></i>
-        {{ imovel.area }}m²
+        {{ imovel().area }}m²
       </span>
-      <span class="property-card__feature" *ngIf="imovel.vagas > 0">
-        <i data-feather="briefcase" aria-hidden="true"></i>
-        {{ imovel.vagas }} vaga{{ imovel.vagas > 1 ? 's' : '' }}
-      </span>
+      @if (imovel().vagas > 0) {
+        <span class="property-card__feature">
+          <i data-feather="briefcase" aria-hidden="true"></i>
+          {{ imovel().vagas }} vaga{{ imovel().vagas > 1 ? 's' : '' }}
+        </span>
+      }
     </div>
     <a
-      [routerLink]="'/template-01/imovel/' + imovel.id"
+      [routerLink]="'/template-01/imovel/' + imovel().id"
       class="property-card__link"
     >
       Ver Detalhes

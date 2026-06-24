@@ -1,18 +1,19 @@
-<header class="header" [class.header--scrolled]="isScrolled">
+<header class="header" [class.header--scrolled]="isScrolled()">
   <a href="#main-content" class="skip-link">Ir para o conteúdo</a>
 
   <div class="header__container">
     <a routerLink="/template-01" class="header__logo" (click)="closeMobileMenu()">
-      <img
-        *ngIf="site?.logo"
-        [src]="site.logo"
-        [alt]="site.nome + ' - Logo'"
-        class="header__logo-img"
-        (error)="onLogoError($event)"
-      />
+      @if (site().logo) {
+        <img
+          [src]="site().logo"
+          [alt]="site().nome + ' - Logo'"
+          class="header__logo-img"
+          (error)="onLogoError($event)"
+        />
+      }
     </a>
 
-    <nav class="header__nav" [class.header__nav--open]="isMobileMenuOpen" aria-label="Navegação principal">
+    <nav class="header__nav" [class.header__nav--open]="isMobileMenuOpen()" aria-label="Navegação principal">
       <a
         routerLink="/template-01"
         routerLinkActive="header__nav-link--active"
@@ -45,11 +46,11 @@
 
     <button
       class="header__menu-toggle"
-      [class.header__menu-toggle--active]="isMobileMenuOpen"
+      [class.header__menu-toggle--active]="isMobileMenuOpen()"
       (click)="toggleMobileMenu()"
       aria-label="Abrir menu de navegação"
-      [attr.aria-expanded]="isMobileMenuOpen"
-      [attr.aria-label]="isMobileMenuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'"
+      [attr.aria-expanded]="isMobileMenuOpen()"
+      [attr.aria-label]="isMobileMenuOpen() ? 'Fechar menu de navegação' : 'Abrir menu de navegação'"
     >
       <span class="header__menu-bar"></span>
       <span class="header__menu-bar"></span>
@@ -60,7 +61,7 @@
   <!-- Mobile overlay -->
   <div
     class="header__overlay"
-    [class.header__overlay--visible]="isMobileMenuOpen"
+    [class.header__overlay--visible]="isMobileMenuOpen()"
     (click)="closeMobileMenu()"
     aria-hidden="true"
   ></div>

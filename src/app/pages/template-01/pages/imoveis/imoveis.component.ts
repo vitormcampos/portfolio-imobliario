@@ -1,7 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, computed, signal, inject, ChangeDetectionStrategy, afterNextRender } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
 import { HeaderComponent } from '../../layout/header.component';
 import { FooterComponent } from '../../layout/footer.component';
 import { WhatsappButtonComponent } from '../../components/whatsapp-button/whatsapp-button.component';
@@ -9,15 +7,12 @@ import { PropertyCardComponent } from '../../components/property-card/property-c
 import { RevealDirective } from '../../../../shared/directives/reveal.directive';
 import { FeatherService } from '../../../../shared/services/feather.service';
 import { ImovelService } from '../../../../shared/services/imovel.service';
-import { Imovel } from '../../../../shared/models/imovel.model';
 
 @Component({
   selector: 'app-imoveis',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgFor,
-    NgIf,
-    FormsModule,
     HeaderComponent,
     FooterComponent,
     WhatsappButtonComponent,
@@ -27,63 +22,41 @@ import { Imovel } from '../../../../shared/models/imovel.model';
   templateUrl: './imoveis.component.html',
   styleUrls: ['./imoveis.component.css'],
 })
-export class ImoveisComponent implements OnInit, AfterViewInit {
-  allImoveis: Imovel[] = [];
-  filteredImoveis: Imovel[] = [];
+export class ImoveisComponent {
+  private readonly imovelService = inject(ImovelService);
+  private readonly featherService = inject(FeatherService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
-  filters = {
-    tipo: '',
-    cidade: '',
-    finalidade: '',
-    quartos: '',
-  };
+  protected readonly allImoveis = this.imovelService.imoveis;
+  protected readonly cidades = ['São Paulo', 'Barueri', 'Cotia', 'Osasco', 'Santos'];
 
-  cidades = ['São Paulo', 'Barueri', 'Cotia', 'Osasco', 'Santos'];
+  protected readonly filterTipo = signal('');
+  protected readonly filterCidade = signal('');
+  protected readonly filterFinalidade = signal('');
+  protected readonly filterQuartos = signal('');
 
-  constructor(
-    private imovelService: ImovelService,
-    private featherService: FeatherService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  protected readonly filteredImoveis = computed(() => {
+    let result = [...this.allImoveis()];
 
-  ngOnInit(): void {
-    this.allImoveis = this.imovelService.getImoveis();
+    const tipo = this.filterTipo();
+    const cidade = this.filterCidade();
+    const finalidade = this.filterFinalidade();
+    const quartos = this.filterQuartos();
 
-    // Check query params from search
-    this.route.queryParams.subscribe((params) => {
-      this.filters.tipo = params['tipo'] || '';
-      this.filters.cidade = params['cidade'] || '';
-      this.filters.finalidade = params['finalidade'] || '';
-      this.filters.quartos = params['quartos'] || '';
-      this.applyFilters();
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.featherService.replace();
-  }
-
-  applyFilters(): void {
-    let result = [...this.allImoveis];
-
-    if (this.filters.tipo) {
-      result = result.filter((i) => i.tipo === this.filters.tipo);
+    if (tipo) {
+      result = result.filter(i => i.tipo === tipo);
     }
-    if (this.filters.cidade) {
-      result = result.filter((i) =>
-        i.cidade.toLowerCase().includes(this.filters.cidade.toLowerCase())
-      );
+    if (cidade) {
+      result = result.filter(i => i.cidade.toLowerCase().includes(cidade.toLowerCase()));
     }
-    if (this.filters.finalidade) {
-      result = result.filter(
-        (i) => i.finalidade === this.filters.finalidade
-      );
+    if (finalidade) {
+      result = result.filter(i => i.finalidade === finalidade);
     }
-    if (this.filters.quartos) {
-      const minQuartos = parseInt(this.filters.quartos, 10);
+    if (quartos) {
+      const minQuartos = parseInt(quartos, 10);
       if (!isNaN(minQuartos)) {
-        result = result.filter((i) => i.quartos >= minQuartos);
+        result = result.filter(i => i.quartos >= minQuartos);
       }
     }
 
@@ -94,16 +67,37 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
       return a.preco - b.preco;
     });
 
-    this.filteredImoveis = result;
+    return result;
+  });
+
+  constructor() {
+    // Initialize filters from query params (e.g., when coming from home page search)
+    const params = this.route.snapshot.queryParams;
+    if (params['tipo']) this.filterTipo.set(params['tipo']);
+    if (params['cidade']) this.filterCidade.set(params['cidade']);
+    if (params['finalidade']) this.filterFinalidade.set(params['finalidade']);
+    if (params['quartos']) this.filterQuartos.set(params['quartos']);
+
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
+  }
+
+  onFilterChange(field: string, event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    switch (field) {
+      case 'tipo': this.filterTipo.set(value); break;
+      case 'cidade': this.filterCidade.set(value); break;
+      case 'finalidade': this.filterFinalidade.set(value); break;
+      case 'quartos': this.filterQuartos.set(value); break;
+    }
   }
 
   clearFilters(): void {
-    this.filters = {
-      tipo: '',
-      cidade: '',
-      finalidade: '',
-      quartos: '',
-    };
+    this.filterTipo.set('');
+    this.filterCidade.set('');
+    this.filterFinalidade.set('');
+    this.filterQuartos.set('');
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},

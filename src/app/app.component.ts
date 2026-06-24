@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { FeatherService } from './shared/services/feather.service';
-import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -10,29 +9,14 @@ import { takeUntil, filter } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class AppComponent {
+  private readonly router = inject(Router);
+  private readonly featherService = inject(FeatherService);
 
-  constructor(
-    private router: Router,
-    private featherService: FeatherService
-  ) {}
-
-  ngOnInit(): void {
+  constructor() {
+    // Re-initialize Feather icons after each navigation.
     this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        setTimeout(() => {
-          this.featherService.replace();
-        }, 0);
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => this.featherService.replace());
   }
 }

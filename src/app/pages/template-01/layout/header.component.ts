@@ -1,39 +1,36 @@
-import { Component, HostListener, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, signal, inject, ChangeDetectionStrategy, afterNextRender } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SiteService } from '../../../shared/services/site.service';
-import { Site } from '../../../shared/models/site.model';
 import { FeatherService } from '../../../shared/services/feather.service';
-import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NgIf],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
+  host: {
+    '(window:scroll)': 'onWindowScroll()',
+  },
 })
-export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
-  site!: Site;
-  isScrolled = false;
-  isMobileMenuOpen = false;
+export class HeaderComponent {
+  private readonly siteService = inject(SiteService);
+  private readonly featherService = inject(FeatherService);
 
-  constructor(
-    private siteService: SiteService,
-    private featherService: FeatherService
-  ) {}
+  protected readonly site = this.siteService.site;
+  protected readonly isScrolled = signal(false);
+  protected readonly isMobileMenuOpen = signal(false);
 
-  ngOnInit(): void {
-    this.site = this.siteService.getSite();
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
   }
 
-  ngAfterViewInit(): void {
-    this.featherService.replace();
-  }
-
-  @HostListener('window:scroll', [])
   onWindowScroll(): void {
     const scrolled = window.scrollY > 50;
-    this.isScrolled = scrolled;
+    this.isScrolled.set(scrolled);
     if (scrolled) {
       document.body.classList.add('header-scrolled');
     } else {
@@ -42,21 +39,17 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   toggleMobileMenu(): void {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-    document.body.style.overflow = this.isMobileMenuOpen ? 'hidden' : '';
+    this.isMobileMenuOpen.update(v => !v);
+    document.body.style.overflow = this.isMobileMenuOpen() ? 'hidden' : '';
   }
 
   closeMobileMenu(): void {
-    this.isMobileMenuOpen = false;
+    this.isMobileMenuOpen.set(false);
     document.body.style.overflow = '';
   }
 
   onLogoError(event: Event): void {
     const img = event.target as HTMLImageElement;
     img.style.display = 'none';
-  }
-
-  ngOnDestroy(): void {
-    document.body.style.overflow = '';
   }
 }

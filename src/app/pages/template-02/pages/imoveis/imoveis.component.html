@@ -18,7 +18,7 @@
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">Tipo</label>
             <div class="select-wrapper">
-              <select class="form-control" [(ngModel)]="filters.tipo" (change)="onFilter()">
+              <select class="form-control" [value]="tipoFilter()" (change)="onTipoChange($event)">
                 <option value="">Todos</option>
                 <option value="casa">Casa</option>
                 <option value="apartamento">Apartamento</option>
@@ -30,16 +30,18 @@
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">Bairro</label>
             <div class="select-wrapper">
-              <select class="form-control" [(ngModel)]="filters.bairro" (change)="onFilter()">
+              <select class="form-control" [value]="bairroFilter()" (change)="onBairroChange($event)">
                 <option value="">Todos</option>
-                <option *ngFor="let bairro of bairros" [value]="bairro">{{ bairro }}</option>
+                @for (bairro of bairros(); track bairro) {
+                  <option [value]="bairro">{{ bairro }}</option>
+                }
               </select>
             </div>
           </div>
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">Quartos</label>
             <div class="select-wrapper">
-              <select class="form-control" [(ngModel)]="filters.quartos" (change)="onFilter()">
+              <select class="form-control" [value]="quartosFilter()" (change)="onQuartosChange($event)">
                 <option value="">Qualquer</option>
                 <option value="1">1+</option>
                 <option value="2">2+</option>
@@ -51,7 +53,7 @@
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">Valor máx.</label>
             <div class="select-wrapper">
-              <select class="form-control" [(ngModel)]="filters.valor" (change)="onFilter()">
+              <select class="form-control" [value]="valorFilter()" (change)="onValorChange($event)">
                 <option value="">Qualquer</option>
                 <option value="300000">Até R$ 300 mil</option>
                 <option value="500000">Até R$ 500 mil</option>
@@ -72,31 +74,29 @@
       <!-- Results count + Clear -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <p style="font-size: 14px; color: #666666; margin: 0;">
-          Mostrando <strong>{{ filteredImoveis.length }}</strong> imóveis encontrados
+          Mostrando <strong>{{ filteredImoveis().length }}</strong> imóveis encontrados
         </p>
         <button class="btn btn-ghost" style="width: auto; padding: 6px 16px; font-size: 13px;" (click)="clearFilters()">
           Limpar Filtros
         </button>
       </div>
 
-      <!-- Grid -->
-      <div class="template02-properties-grid uk-grid-match uk-child-width-1-3@l uk-child-width-1-2@m uk-child-width-1-1" uk-grid uk-height-match=".template02-card" *ngIf="filteredImoveis.length > 0; else noResults">
-        <div
-          *ngFor="let imovel of filteredImoveis; let i = index"
-          appReveal
-          [appRevealDelay]="100 * (i % 6)"
-        >
-          <app-template02-property-card [imovel]="imovel" />
+      <!-- Grid or No Results -->
+      @if (filteredImoveis().length > 0) {
+        <div class="template02-properties-grid uk-grid-match uk-child-width-1-3@l uk-child-width-1-2@m uk-child-width-1-1" uk-grid uk-height-match=".template02-card">
+          @for (imovel of filteredImoveis(); track imovel.id; let i = $index) {
+            <div appReveal [appRevealDelay]="100 * (i % 6)">
+              <app-template02-property-card [imovel]="imovel" />
+            </div>
+          }
         </div>
-      </div>
-
-      <ng-template #noResults>
+      } @else {
         <div class="text-center" style="padding: 48px 0; color: #666666;">
           <i data-feather="search" style="width: 48px; height: 48px; margin-bottom: 16px;" aria-hidden="true"></i>
           <p style="font-size: 18px;">Nenhum imóvel encontrado com os filtros selecionados.</p>
           <button class="btn btn-ghost mt-6" (click)="clearFilters()">Limpar Filtros</button>
         </div>
-      </ng-template>
+      }
 
       <!-- Pagination (visual only) -->
       <nav class="template02-pagination" aria-label="Paginação de imóveis">

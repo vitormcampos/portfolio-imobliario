@@ -1,7 +1,8 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, computed, signal, inject, ChangeDetectionStrategy, afterNextRender } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { NgFor, NgIf, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderComponent } from '../../layout/header.component';
 import { FooterComponent } from '../../layout/footer.component';
 import { WhatsappButtonComponent } from '../../components/whatsapp-button/whatsapp-button.component';
@@ -10,19 +11,14 @@ import { RevealDirective } from '../../../../shared/directives/reveal.directive'
 import { FeatherService } from '../../../../shared/services/feather.service';
 import { ImovelService } from '../../../../shared/services/imovel.service';
 import { SiteService } from '../../../../shared/services/site.service';
-import { Imovel } from '../../../../shared/models/imovel.model';
-import { Site } from '../../../../shared/models/site.model';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 declare var UIkit: any;
 
 @Component({
   selector: 'app-imovel',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgFor,
-    NgIf,
     CurrencyPipe,
     RouterLink,
     HeaderComponent,
@@ -34,113 +30,97 @@ declare var UIkit: any;
   templateUrl: './imovel.component.html',
   styleUrls: ['./imovel.component.css'],
 })
-export class ImovelComponent implements OnInit, AfterViewInit, OnDestroy {
-  imovel: Imovel | null = null;
-  relacionados: Imovel[] = [];
-  site!: Site;
-  currentSlide = 0;
-  private destroy$ = new Subject<void>();
+export class ImovelComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly imovelService = inject(ImovelService);
+  private readonly siteService = inject(SiteService);
+  private readonly featherService = inject(FeatherService);
+  private readonly sanitizer = inject(DomSanitizer);
 
-  constructor(
-    private route: ActivatedRoute,
-    private imovelService: ImovelService,
-    private siteService: SiteService,
-    private featherService: FeatherService,
-    private sanitizer: DomSanitizer
-  ) {}
+  private readonly params = toSignal(this.route.paramMap, { initialValue: null });
 
-  ngOnInit(): void {
-    this.site = this.siteService.getSite();
+  protected readonly site = this.siteService.site;
+  protected readonly currentSlide = signal(0);
 
-    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      const id = Number(params.get('id'));
-      this.imovel = this.imovelService.getImovelById(id) || null;
-      if (this.imovel) {
-        this.loadRelacionados();
-      }
-      setTimeout(() => {
-        if (typeof UIkit !== 'undefined') {
-          UIkit.refresh();
-        }
-      }, 0);
-    });
-  }
+  protected readonly imovel = computed(() => {
+    const id = Number(this.params()?.get('id'));
+    return id ? this.imovelService.getImovelById(id)() : undefined;
+  });
 
-  ngAfterViewInit(): void {
-    this.featherService.replace();
-    if (typeof UIkit !== 'undefined') {
-      setTimeout(() => UIkit.refresh(), 100);
-    }
-  }
+  protected readonly relacionados = computed(() => {
+    const imovel = this.imovel();
+    if (!imovel) return [];
+    return this.imovelService.imoveis().filter(
+      i => i.id !== imovel.id && (i.tipo === imovel.tipo || i.cidade === imovel.cidade)
+    ).slice(0, 3);
+  });
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private loadRelacionados(): void {
-    if (!this.imovel) return;
-    const all = this.imovelService.getImoveis();
-    this.relacionados = all
-      .filter(
-        (i) =>
-          i.id !== this.imovel!.id &&
-          (i.tipo === this.imovel!.tipo || i.cidade === this.imovel!.cidade)
-      )
-      .slice(0, 3);
-  }
-
-  getWhatsAppMessage(): string {
-    if (!this.imovel) return '';
-    const msg = `Olá! Tenho interesse no imóvel "${this.imovel.titulo}" (Cód: ${this.imovel.id}). Poderia me enviar mais informações?`;
-    return encodeURIComponent(msg);
-  }
-
-  getMapUrl(): SafeResourceUrl {
-    if (!this.imovel) {
-      return this.sanitizer.bypassSecurityTrustResourceUrl(
-        'https://maps.google.com/maps?q=Cuiab%C3%A1%2C%20MT&t=&z=15&ie=UTF8&iwloc=&output=embed'
-      );
-    }
-    const address = `${this.imovel.endereco}, ${this.imovel.cidade}, ${this.imovel.estado}`;
-    const encoded = encodeURIComponent(address);
-    const url = `https://maps.google.com/maps?q=${encoded}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  }
-
-  getWhatsAppUrl(): string {
-    return `${this.site.urlWhatsapp}?text=${this.getWhatsAppMessage()}`;
-  }
-
-  getTipoLabel(): string {
+  protected readonly tipoLabel = computed(() => {
+    const imovel = this.imovel();
+    if (!imovel) return '';
     const labels: Record<string, string> = {
       casa: 'Casa',
       apartamento: 'Apartamento',
       comercial: 'Comercial',
       terreno: 'Terreno',
     };
-    return this.imovel ? labels[this.imovel.tipo] || this.imovel.tipo : '';
-  }
+    return labels[imovel.tipo] || imovel.tipo;
+  });
 
-  getFinalidadeLabel(): string {
-    return this.imovel?.finalidade === 'venda' ? 'Venda' : 'Aluguel';
+  protected readonly finalidadeLabel = computed(() => {
+    return this.imovel()?.finalidade === 'venda' ? 'Venda' : 'Aluguel';
+  });
+
+  protected readonly whatsappMessage = computed(() => {
+    const imovel = this.imovel();
+    if (!imovel) return '';
+    return encodeURIComponent(
+      `Olá! Tenho interesse no imóvel "${imovel.titulo}" (Cód: ${imovel.id}). Poderia me enviar mais informações?`
+    );
+  });
+
+  protected readonly whatsappUrl = computed(() => {
+    const site = this.site();
+    const message = this.whatsappMessage();
+    return `${site.urlWhatsapp}?text=${message}`;
+  });
+
+  protected readonly mapUrl = computed<SafeResourceUrl>(() => {
+    const imovel = this.imovel();
+    if (!imovel) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(
+        'https://maps.google.com/maps?q=Cuiab%C3%A1%2C%20MT&t=&z=15&ie=UTF8&iwloc=&output=embed'
+      );
+    }
+    const address = `${imovel.endereco}, ${imovel.cidade}, ${imovel.estado}`;
+    const encoded = encodeURIComponent(address);
+    const url = `https://maps.google.com/maps?q=${encoded}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  });
+
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+      if (typeof UIkit !== 'undefined') {
+        UIkit.refresh();
+      }
+    });
   }
 
   prevSlide(): void {
-    if (!this.imovel) return;
-    this.currentSlide =
-      (this.currentSlide - 1 + this.imovel.fotos.length) %
-      this.imovel.fotos.length;
+    const fotos = this.imovel()?.fotos;
+    if (!fotos || fotos.length === 0) return;
+    this.currentSlide.update(i => (i - 1 + fotos.length) % fotos.length);
   }
 
   nextSlide(): void {
-    if (!this.imovel) return;
-    this.currentSlide =
-      (this.currentSlide + 1) % this.imovel.fotos.length;
+    const fotos = this.imovel()?.fotos;
+    if (!fotos || fotos.length === 0) return;
+    this.currentSlide.update(i => (i + 1) % fotos.length);
   }
 
   goToSlide(index: number): void {
-    this.currentSlide = index;
+    this.currentSlide.set(index);
     if (typeof UIkit !== 'undefined') {
       const el = document.querySelector('[uk-slideshow]');
       if (el) {

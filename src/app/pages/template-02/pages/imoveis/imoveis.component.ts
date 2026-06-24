@@ -1,7 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, signal, computed, ChangeDetectionStrategy, afterNextRender, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
 import { HeaderComponent } from '../../layout/header.component';
 import { FooterComponent } from '../../layout/footer.component';
 import { WhatsappButtonComponent } from '../../components/whatsapp-button/whatsapp-button.component';
@@ -16,10 +14,8 @@ declare var UIkit: any;
 @Component({
   selector: 'app-template02-imoveis',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    NgFor,
-    NgIf,
-    FormsModule,
     HeaderComponent,
     FooterComponent,
     WhatsappButtonComponent,
@@ -29,69 +25,53 @@ declare var UIkit: any;
   templateUrl: './imoveis.component.html',
   styleUrls: ['./imoveis.component.css'],
 })
-export class ImoveisComponent implements OnInit, AfterViewInit {
-  allImoveis: Imovel[] = [];
-  filteredImoveis: Imovel[] = [];
+export class ImoveisComponent {
+  private readonly imovelService = inject(ImovelService);
+  private readonly featherService = inject(FeatherService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
-  filters = {
-    tipo: '',
-    bairro: '',
-    quartos: '',
-    valor: '',
-  };
+  protected readonly allImoveis = this.imovelService.imoveis;
 
-  bairros: string[] = [];
+  // Filter signals
+  protected readonly tipoFilter = signal('');
+  protected readonly bairroFilter = signal('');
+  protected readonly quartosFilter = signal('');
+  protected readonly valorFilter = signal('');
 
-  constructor(
-    private imovelService: ImovelService,
-    private featherService: FeatherService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  protected readonly bairros = computed(() =>
+    [...new Set(this.allImoveis().map(i => i.cidade))].sort()
+  );
 
-  ngOnInit(): void {
-    this.allImoveis = this.imovelService.getImoveis();
-    this.bairros = [...new Set(this.allImoveis.map((i) => i.cidade))].sort();
+  /** Reactive filtered list derived from allImoveis + filter signals */
+  protected readonly filteredImoveis = computed(() => {
+    let result: Imovel[] = [...this.allImoveis()];
 
-    this.route.queryParams.subscribe((params) => {
-      this.filters.tipo = params['tipo'] || '';
-      this.filters.bairro = params['cidade'] || '';
-      this.filters.quartos = params['quartos'] || '';
-      this.filters.valor = params['valor'] || '';
-      this.applyFilters();
-    });
-  }
-
-  ngAfterViewInit(): void {
-    this.featherService.replace();
-    if (typeof UIkit !== 'undefined') {
-      setTimeout(() => {
-        UIkit.refresh();
-      }, 100);
+    const tipo = this.tipoFilter();
+    if (tipo) {
+      result = result.filter(i => i.tipo === tipo);
     }
-  }
 
-  applyFilters(): void {
-    let result = [...this.allImoveis];
-
-    if (this.filters.tipo) {
-      result = result.filter((i) => i.tipo === this.filters.tipo);
-    }
-    if (this.filters.bairro) {
-      result = result.filter((i) =>
-        i.cidade.toLowerCase().includes(this.filters.bairro.toLowerCase())
+    const bairro = this.bairroFilter();
+    if (bairro) {
+      result = result.filter(i =>
+        i.cidade.toLowerCase().includes(bairro.toLowerCase())
       );
     }
-    if (this.filters.quartos) {
-      const minQuartos = parseInt(this.filters.quartos, 10);
+
+    const quartos = this.quartosFilter();
+    if (quartos) {
+      const minQuartos = parseInt(quartos, 10);
       if (!isNaN(minQuartos)) {
-        result = result.filter((i) => i.quartos >= minQuartos);
+        result = result.filter(i => i.quartos >= minQuartos);
       }
     }
-    if (this.filters.valor) {
-      const maxValor = parseInt(this.filters.valor, 10);
+
+    const valor = this.valorFilter();
+    if (valor) {
+      const maxValor = parseInt(valor, 10);
       if (!isNaN(maxValor)) {
-        result = result.filter((i) => i.preco <= maxValor);
+        result = result.filter(i => i.preco <= maxValor);
       }
     }
 
@@ -102,36 +82,69 @@ export class ImoveisComponent implements OnInit, AfterViewInit {
       return a.preco - b.preco;
     });
 
-    this.filteredImoveis = result;
+    return result;
+  });
+
+  constructor() {
+    // Initialize filters from route snapshot (initial load)
+    const params = this.route.snapshot.queryParams;
+    if (params['tipo']) this.tipoFilter.set(params['tipo']);
+    if (params['cidade']) this.bairroFilter.set(params['cidade']);
+    if (params['quartos']) this.quartosFilter.set(params['quartos']);
+    if (params['valor']) this.valorFilter.set(params['valor']);
+
+    afterNextRender(() => {
+      this.featherService.replace();
+      if (typeof UIkit !== 'undefined') {
+        setTimeout(() => UIkit.refresh(), 100);
+      }
+    });
   }
 
+  /** Update route query params when filter changes */
+  onFilter(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        ...(this.tipoFilter() && { tipo: this.tipoFilter() }),
+        ...(this.bairroFilter() && { cidade: this.bairroFilter() }),
+        ...(this.quartosFilter() && { quartos: this.quartosFilter() }),
+        ...(this.valorFilter() && { valor: this.valorFilter() }),
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  /** Clear all filters and reset route params */
   clearFilters(): void {
-    this.filters = {
-      tipo: '',
-      bairro: '',
-      quartos: '',
-      valor: '',
-    };
+    this.tipoFilter.set('');
+    this.bairroFilter.set('');
+    this.quartosFilter.set('');
+    this.valorFilter.set('');
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},
     });
   }
 
-  onFilter(): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: this.getQueryParams(),
-      queryParamsHandling: 'merge',
-    });
+  /** Handler for select changes — updates the signal and triggers filtering */
+  onTipoChange(event: Event): void {
+    this.tipoFilter.set((event.target as HTMLSelectElement).value);
+    this.onFilter();
   }
 
-  private getQueryParams(): Record<string, string> {
-    const params: Record<string, string> = {};
-    if (this.filters.tipo) params['tipo'] = this.filters.tipo;
-    if (this.filters.bairro) params['cidade'] = this.filters.bairro;
-    if (this.filters.quartos) params['quartos'] = this.filters.quartos;
-    if (this.filters.valor) params['valor'] = this.filters.valor;
-    return params;
+  onBairroChange(event: Event): void {
+    this.bairroFilter.set((event.target as HTMLSelectElement).value);
+    this.onFilter();
+  }
+
+  onQuartosChange(event: Event): void {
+    this.quartosFilter.set((event.target as HTMLSelectElement).value);
+    this.onFilter();
+  }
+
+  onValorChange(event: Event): void {
+    this.valorFilter.set((event.target as HTMLSelectElement).value);
+    this.onFilter();
   }
 }

@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Site } from '../models/site.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SiteService {
-  private siteData: Site = {
+  private siteSignal = signal<Site>({
     logo: 'https://app.procorretor.com/upload/site/16/b4eb8ec0-9b19-4d38-a404-8e487739f609.png',
     nome: 'Visa Empreendimentos Imobiliários',
     slogan: 'Sua imobiliária em Cuiabá',
@@ -15,12 +15,11 @@ export class SiteService {
     urlFacebook: 'https://www.facebook.com/visaimobiliariamt',
     urlInstagram: 'https://www.instagram.com/visaimobmt/',
     urlWhatsapp: 'https://wa.me/5565999545667',
-    endereco: 'Av. Presidente Marques, 882, Térreo, Centro, Cuiabá/MT - CEP: 78.045-175',
+    endereco:
+      'Av. Presidente Marques, 882, Térreo, Centro, Cuiabá/MT - CEP: 78.045-175',
     sobre:
       'A Visa Empreendimentos Imobiliários é uma imobiliária com vasta experiência no mercado de Cuiabá e região, oferecendo soluções completas para compra, venda e aluguel de imóveis residenciais, comerciais e terrenos.',
-  };
+  });
 
-  getSite(): Site {
-    return this.siteData;
-  }
+  readonly site = this.siteSignal.asReadonly();
 }

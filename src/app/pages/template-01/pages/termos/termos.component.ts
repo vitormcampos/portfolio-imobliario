@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, afterNextRender } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '../../layout/header.component';
 import { FooterComponent } from '../../layout/footer.component';
@@ -9,6 +9,7 @@ import { FeatherService } from '../../../../shared/services/feather.service';
 @Component({
   selector: 'app-termos',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
     HeaderComponent,
@@ -19,10 +20,12 @@ import { FeatherService } from '../../../../shared/services/feather.service';
   templateUrl: './termos.component.html',
   styleUrls: ['./termos.component.css'],
 })
-export class TermosComponent implements AfterViewInit {
-  constructor(private featherService: FeatherService) {}
+export class TermosComponent {
+  private readonly featherService = inject(FeatherService);
 
-  ngAfterViewInit(): void {
-    this.featherService.replace();
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
   }
 }

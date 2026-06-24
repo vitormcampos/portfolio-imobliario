@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { Imovel } from '../models/imovel.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImovelService {
-  private imoveis: Imovel[] = [
+  private imoveisSignal = signal<Imovel[]>([
     {
       id: 1,
       titulo: 'Casa com Piscina no Jardim América',
@@ -234,17 +234,18 @@ export class ImovelService {
       destaque: false,
       area: 600,
     },
-  ];
+  ]);
 
-  getImoveis(): Imovel[] {
-    return this.imoveis;
-  }
+  /** Lista completa de imóveis (readonly) */
+  readonly imoveis = this.imoveisSignal.asReadonly();
 
-  getImoveisDestaque(): Imovel[] {
-    return this.imoveis.filter((i) => i.destaque);
-  }
+  /** Imóveis em destaque (derivado via computed) */
+  readonly destaques = computed(() =>
+    this.imoveis().filter((i) => i.destaque)
+  );
 
-  getImovelById(id: number): Imovel | undefined {
-    return this.imoveis.find((i) => i.id === id);
+  /** Retorna um Signal reativo para o imóvel com o ID informado */
+  getImovelById(id: number) {
+    return computed(() => this.imoveis().find((i) => i.id === id));
   }
 }

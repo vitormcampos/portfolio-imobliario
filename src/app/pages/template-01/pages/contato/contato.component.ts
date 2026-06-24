@@ -1,18 +1,16 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, signal, inject, ChangeDetectionStrategy, afterNextRender, WritableSignal } from '@angular/core';
 import { HeaderComponent } from '../../layout/header.component';
 import { FooterComponent } from '../../layout/footer.component';
 import { WhatsappButtonComponent } from '../../components/whatsapp-button/whatsapp-button.component';
 import { RevealDirective } from '../../../../shared/directives/reveal.directive';
 import { FeatherService } from '../../../../shared/services/feather.service';
 import { SiteService } from '../../../../shared/services/site.service';
-import { Site } from '../../../../shared/models/site.model';
 
 @Component({
   selector: 'app-contato',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
     HeaderComponent,
     FooterComponent,
     WhatsappButtonComponent,
@@ -21,36 +19,34 @@ import { Site } from '../../../../shared/models/site.model';
   templateUrl: './contato.component.html',
   styleUrls: ['./contato.component.css'],
 })
-export class ContatoComponent implements OnInit, AfterViewInit {
-  site!: Site;
-  toastVisible = false;
+export class ContatoComponent {
+  private readonly siteService = inject(SiteService);
+  private readonly featherService = inject(FeatherService);
 
-  contatoForm = {
-    nome: '',
-    email: '',
-    telefone: '',
-    assunto: '',
-    mensagem: '',
-  };
+  protected readonly site = this.siteService.site;
+  protected readonly toastVisible = signal(false);
 
-  constructor(
-    private siteService: SiteService,
-    private featherService: FeatherService
-  ) {}
+  protected readonly formNome = signal('');
+  protected readonly formEmail = signal('');
+  protected readonly formTelefone = signal('');
+  protected readonly formAssunto = signal('');
+  protected readonly formMensagem = signal('');
 
-  ngOnInit(): void {
-    this.site = this.siteService.getSite();
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
   }
 
-  ngAfterViewInit(): void {
-    this.featherService.replace();
+  protected onInputChange(field: WritableSignal<string>, event: Event): void {
+    field.set((event.target as HTMLInputElement | HTMLSelectElement).value);
   }
 
   submitForm(event: Event): void {
     event.preventDefault();
-    this.toastVisible = true;
+    this.toastVisible.set(true);
     setTimeout(() => {
-      this.toastVisible = false;
+      this.toastVisible.set(false);
     }, 4000);
   }
 }

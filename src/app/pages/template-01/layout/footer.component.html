@@ -5,17 +5,17 @@
       <div class="footer__col footer__col--brand">
         <div class="footer__logo">
           <img
-            [src]="site.logo"
-            [alt]="site.nome + ' - Logo'"
+            [src]="site().logo"
+            [alt]="site().nome + ' - Logo'"
             class="footer__logo-img"
             (error)="onLogoError($event)"
           />
-          <span class="footer__logo-text">{{ site.nome }}</span>
+          <span class="footer__logo-text">{{ site().nome }}</span>
         </div>
-        <p class="footer__description">{{ site.sobre }}</p>
+        <p class="footer__description">{{ site().sobre }}</p>
         <div class="footer__social">
           <a
-            [href]="site.urlWhatsapp"
+            [href]="site().urlWhatsapp"
             target="_blank"
             rel="noopener noreferrer"
             class="footer__social-link"
@@ -24,7 +24,7 @@
             <i data-feather="message-circle"></i>
           </a>
           <a
-            [href]="site.urlInstagram"
+            [href]="site().urlInstagram"
             target="_blank"
             rel="noopener noreferrer"
             class="footer__social-link"
@@ -33,7 +33,7 @@
             <i data-feather="instagram"></i>
           </a>
           <a
-            [href]="site.urlFacebook"
+            [href]="site().urlFacebook"
             target="_blank"
             rel="noopener noreferrer"
             class="footer__social-link"
@@ -74,19 +74,19 @@
         <ul class="footer__contact">
           <li>
             <i data-feather="phone" aria-hidden="true"></i>
-            <a [href]="'tel:' + site.telefone">{{ site.telefone }}</a>
+            <a [href]="'tel:' + site().telefone">{{ site().telefone }}</a>
           </li>
           <li>
             <i data-feather="smartphone" aria-hidden="true"></i>
-            <a [href]="'tel:' + site.celular">{{ site.celular }}</a>
+            <a [href]="'tel:' + site().celular">{{ site().celular }}</a>
           </li>
           <li>
             <i data-feather="mail" aria-hidden="true"></i>
-            <a [href]="'mailto:' + site.email">{{ site.email }}</a>
+            <a [href]="'mailto:' + site().email">{{ site().email }}</a>
           </li>
           <li>
             <i data-feather="map-pin" aria-hidden="true"></i>
-            <span>{{ site.endereco }}</span>
+            <span>{{ site().endereco }}</span>
           </li>
         </ul>
       </div>
@@ -95,7 +95,7 @@
     <div class="footer__divider"></div>
 
     <div class="footer__copyright">
-      <p>&copy; 2024 {{ site.nome }}. Todos os direitos reservados.</p>
+      <p>&copy; 2024 {{ site().nome }}. Todos os direitos reservados.</p>
     </div>
   </div>
 </footer>

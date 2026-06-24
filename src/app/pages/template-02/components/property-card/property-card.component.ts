@@ -1,26 +1,27 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import { Component, input, computed, ChangeDetectionStrategy, afterNextRender, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CurrencyPipe, NgIf, SlicePipe } from '@angular/common';
+import { CurrencyPipe, SlicePipe } from '@angular/common';
 import { Imovel } from '../../../../shared/models/imovel.model';
 import { FeatherService } from '../../../../shared/services/feather.service';
 
 @Component({
   selector: 'app-template02-property-card',
   standalone: true,
-  imports: [RouterLink, CurrencyPipe, NgIf, SlicePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, CurrencyPipe, SlicePipe],
   templateUrl: './property-card.component.html',
   styleUrls: ['./property-card.component.css'],
 })
-export class PropertyCardComponent implements AfterViewInit {
-  @Input({ required: true }) imovel!: Imovel;
+export class PropertyCardComponent {
+  private readonly featherService = inject(FeatherService);
 
-  constructor(private featherService: FeatherService) {}
+  readonly imovel = input.required<Imovel>();
 
-  ngAfterViewInit(): void {
-    this.featherService.replace();
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
   }
 
-  isAluguel(): boolean {
-    return this.imovel.finalidade === 'aluguel';
-  }
+  protected readonly isAluguel = computed(() => this.imovel().finalidade === 'aluguel');
 }

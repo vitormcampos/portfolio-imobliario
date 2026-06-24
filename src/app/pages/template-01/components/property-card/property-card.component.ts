@@ -1,26 +1,27 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import { Component, input, computed, inject, ChangeDetectionStrategy, afterNextRender } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NgIf, CurrencyPipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { Imovel } from '../../../../shared/models/imovel.model';
 import { FeatherService } from '../../../../shared/services/feather.service';
 
 @Component({
   selector: 'app-property-card',
   standalone: true,
-  imports: [RouterLink, NgIf, CurrencyPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, CurrencyPipe],
   templateUrl: './property-card.component.html',
   styleUrls: ['./property-card.component.css'],
 })
-export class PropertyCardComponent implements AfterViewInit {
-  @Input({ required: true }) imovel!: Imovel;
+export class PropertyCardComponent {
+  private readonly featherService = inject(FeatherService);
 
-  constructor(private featherService: FeatherService) {}
+  readonly imovel = input.required<Imovel>();
 
-  ngAfterViewInit(): void {
-    this.featherService.replace();
-  }
+  protected readonly isAluguel = computed(() => this.imovel().finalidade === 'aluguel');
 
-  isAluguel(): boolean {
-    return this.imovel.finalidade === 'aluguel';
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
   }
 }

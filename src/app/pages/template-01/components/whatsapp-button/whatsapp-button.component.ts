@@ -1,30 +1,26 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy, afterNextRender } from '@angular/core';
 import { FeatherService } from '../../../../shared/services/feather.service';
 import { SiteService } from '../../../../shared/services/site.service';
-import { Site } from '../../../../shared/models/site.model';
 
 @Component({
   selector: 'app-whatsapp-button',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './whatsapp-button.component.html',
   styleUrls: ['./whatsapp-button.component.css'],
 })
-export class WhatsappButtonComponent implements OnInit, AfterViewInit {
-  whatsappUrl = 'https://wa.me/5565999545667';
+export class WhatsappButtonComponent {
+  private readonly featherService = inject(FeatherService);
+  private readonly siteService = inject(SiteService);
 
-  constructor(
-    private featherService: FeatherService,
-    private siteService: SiteService
-  ) {}
+  protected readonly whatsappUrl = computed(() => {
+    const site = this.siteService.site();
+    return site?.urlWhatsapp || 'https://wa.me/5565999545667';
+  });
 
-  ngOnInit(): void {
-    const site: Site = this.siteService.getSite();
-    if (site?.urlWhatsapp) {
-      this.whatsappUrl = site.urlWhatsapp;
-    }
-  }
-
-  ngAfterViewInit(): void {
-    this.featherService.replace();
+  constructor() {
+    afterNextRender(() => {
+      this.featherService.replace();
+    });
   }
 }

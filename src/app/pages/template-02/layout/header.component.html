@@ -1,19 +1,19 @@
-<header class="template02-header" [class.template02-header--scrolled]="isScrolled">
+<header class="template02-header" [class.template02-header--scrolled]="isScrolled()">
   <!-- Top bar -->
   <div class="template02-header-top">
     <div class="container template02-header-top-inner">
       <div class="template02-header-contacts">
-        <a [href]="'tel:' + site.telefone" [attr.aria-label]="'Ligar para ' + site.telefone">
+        <a [href]="'tel:' + site().telefone" [attr.aria-label]="'Ligar para ' + site().telefone">
           <i data-feather="phone" aria-hidden="true"></i>
-          {{ site.telefone }}
+          {{ site().telefone }}
         </a>
-        <a [href]="'tel:' + site.celular" [attr.aria-label]="'Ligar para ' + site.celular">
+        <a [href]="'tel:' + site().celular" [attr.aria-label]="'Ligar para ' + site().celular">
           <i data-feather="smartphone" aria-hidden="true"></i>
-          {{ site.celular }}
+          {{ site().celular }}
         </a>
-        <a [href]="'mailto:' + site.email" aria-label="Enviar email">
+        <a [href]="'mailto:' + site().email" aria-label="Enviar email">
           <i data-feather="mail" aria-hidden="true"></i>
-          {{ site.email }}
+          {{ site().email }}
         </a>
       </div>
       <div class="template02-header-lang">
@@ -25,10 +25,10 @@
   <!-- Main bar -->
   <div class="template02-header-main">
     <div class="container template02-header-main-inner">
-      <a routerLink="/template-02" class="template02-logo" [attr.aria-label]="site.nome + ' — Página inicial'">
+      <a routerLink="/template-02" class="template02-logo" [attr.aria-label]="site().nome + ' — Página inicial'">
         <img
-          [src]="site.logo"
-          [alt]="site.nome + ' - Logo'"
+          [src]="site().logo"
+          [alt]="site().nome + ' - Logo'"
           class="template02-logo-img"
           (error)="onLogoError($event)"
         />
