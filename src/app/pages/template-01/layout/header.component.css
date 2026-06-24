@@ -184,8 +184,18 @@
     width: 100%;
   }
 
+  .header--scrolled .header__nav-link {
+    color: var(--color-white);
+  }
+
   .header__nav-link:hover,
   .header__nav-link--active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-gold-light);
+  }
+
+  .header--scrolled .header__nav-link:hover,
+  .header--scrolled .header__nav-link--active {
     background: rgba(255, 255, 255, 0.1);
     color: var(--color-gold-light);
   }
