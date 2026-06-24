@@ -8,5 +8,12 @@ export const routes: Routes = [
         (m) => m.template01Routes
       ),
   },
+  {
+    path: 'template-02',
+    loadChildren: () =>
+      import('./pages/template-02/template-02.routes').then(
+        (m) => m.template02Routes
+      ),
+  },
   { path: '**', redirectTo: 'template-01' },
 ];

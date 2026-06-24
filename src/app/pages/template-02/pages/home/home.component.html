@@ -1,0 +1,156 @@
+<app-template02-header />
+<main id="main-content">
+  <!-- Hero -->
+  <section class="template02-hero">
+    <!-- Active image (always visible, behind old) -->
+    <div
+      class="template02-hero-bg template02-hero-bg--active"
+      [style.background-image]="'url(' + heroImages[currentHeroIndex] + ')'"
+      role="img"
+      [attr.aria-label]="'Imagem de imóvel destaque'"
+    ></div>
+    <!-- Old image fading out (on top, transitions to transparent) -->
+    <div
+      class="template02-hero-bg template02-hero-bg--old"
+      [class.template02-hero-bg--exiting]="heroExiting"
+      [style.background-image]="'url(' + heroImages[oldHeroIndex] + ')'"
+    ></div>
+    <div class="template02-hero-content">
+      <h1>{{ site.slogan || 'Sua imobiliária em Cuiabá' }}</h1>
+      <p>Encontre o imóvel dos seus sonhos em Cuiabá e região com quem entende do assunto.</p>
+    </div>
+  </section>
+
+  <!-- Filter Bar -->
+  <section class="template02-section" style="padding-top: 0;">
+    <div class="container">
+      <div class="template02-filter-bar">
+        <div class="template02-filter-grid">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Tipo</label>
+            <div class="select-wrapper">
+              <select class="form-control" [(ngModel)]="searchForm.tipo">
+                <option value="">Todos</option>
+                <option value="casa">Casa</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="terreno">Terreno</option>
+                <option value="comercial">Comercial</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Bairro</label>
+            <div class="select-wrapper">
+              <select class="form-control" [(ngModel)]="searchForm.bairro">
+                <option value="">Todos</option>
+                <option *ngFor="let bairro of bairros" [value]="bairro">{{ bairro }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Quartos</label>
+            <div class="select-wrapper">
+              <select class="form-control" [(ngModel)]="searchForm.quartos">
+                <option value="">Qualquer</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Valor máx.</label>
+            <div class="select-wrapper">
+              <select class="form-control" [(ngModel)]="searchForm.valor">
+                <option value="">Qualquer</option>
+                <option value="300000">Até R$ 300 mil</option>
+                <option value="500000">Até R$ 500 mil</option>
+                <option value="800000">Até R$ 800 mil</option>
+                <option value="1000000">Até R$ 1 milhão</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-primary" style="width: 100%;" (click)="onSearch()">
+              Buscar Imóveis
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Destaques Section -->
+  <section class="template02-section" appReveal>
+    <div class="container">
+      <div class="template02-section-title">
+        <h2>Imóveis em Destaque</h2>
+        <p>As melhores oportunidades do mercado imobiliário de Cuiabá</p>
+      </div>
+      <div class="template02-properties-grid uk-grid-match uk-child-width-1-3@l uk-child-width-1-2@m uk-child-width-1-1" uk-grid uk-height-match=".template02-card">
+        <div
+          *ngFor="let imovel of destaques; let i = index"
+          appReveal
+          [appRevealDelay]="100 * i"
+        >
+          <app-template02-property-card [imovel]="imovel" />
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <a routerLink="/template-02/imoveis" class="btn btn-primary btn-large">
+          Ver Todos os Imóveis
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Videos Section -->
+  <section class="template02-section" style="background-color: #f5f5f5;" appReveal>
+    <div class="container">
+      <div class="template02-section-title">
+        <h2>Inspiração</h2>
+        <p>Veja os detalhes dessas incríveis residências</p>
+      </div>
+      <div class="template02-videos-grid">
+        <div class="template02-video-card" *ngFor="let video of videos">
+          <iframe
+            [src]="getVideoUrl(video.youtubeId)"
+            width="100%"
+            height="100%"
+            style="border: 0;"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            [title]="video.title"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners Section -->
+  <section class="template02-section" appReveal>
+    <div class="container">
+      <div class="template02-section-title">
+        <h2>Parceria de Sucesso</h2>
+        <p>Com as melhores construtoras de Cuiabá</p>
+      </div>
+      <div class="template02-partners-grid">
+        <div
+          *ngFor="let partner of partnerLogos"
+          class="template02-partner-logo"
+        >
+          <svg width="120" height="60" viewBox="0 0 120 60" aria-hidden="true">
+            <rect width="120" height="60" rx="4" [attr.fill]="partner.color"/>
+            <text x="60" y="35" text-anchor="middle" font-size="14" fill="#666" font-weight="600">{{ partner.name }}</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-template02-footer />
+<app-template02-whatsapp-button />

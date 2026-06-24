@@ -56,7 +56,7 @@ html {
 
 body {
   margin: 0;
-  font-family: var(--font-body);
+  font-family: 'Inter', var(--font-body);
   color: var(--color-text);
   background: var(--color-bg);
   line-height: 1.6;
@@ -176,6 +176,174 @@ img {
 .skip-link:focus {
   top: 0;
 }
+
+/* =============================================
+   Template-02 — Design System
+   Escopado via [class*="template02-"] para não
+   afetar o template-01
+   ============================================= */
+
+/* ─── Typography ─────────────────────────── */
+[class*="template02-"] h1,
+[class*="template02-"] h2,
+[class*="template02-"] h3,
+[class*="template02-"] h4,
+[class*="template02-"] h5,
+[class*="template02-"] h6 {
+  font-family: 'Inter', var(--font-body);
+}
+
+/* ─── Buttons ────────────────────────────── */
+[class*="template02-"] .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.4s, border-color 0.4s, color 0.4s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', var(--font-body);
+  text-decoration: none;
+}
+
+[class*="template02-"] .btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+[class*="template02-"] .btn-primary:hover {
+  background-color: #333333;
+  border-color: #333333;
+  color: #ffffff;
+}
+
+[class*="template02-"] .btn-accent {
+  background-color: #3c3f9b;
+  color: #ffffff;
+  border-color: #3c3f9b;
+}
+
+[class*="template02-"] .btn-accent:hover {
+  background-color: #2a2d73;
+  border-color: #2a2d73;
+  color: #ffffff;
+}
+
+[class*="template02-"] .btn-ghost {
+  background-color: transparent;
+  color: #333333;
+  border-color: #e5e5e5;
+}
+
+[class*="template02-"] .btn-ghost:hover {
+  border-color: #b2b2b2;
+}
+
+[class*="template02-"] .btn-phone {
+  background-color: #ffca2c;
+  color: #000000;
+  border-color: #ffca2c;
+  width: 100%;
+  padding: 10px;
+}
+
+[class*="template02-"] .btn-large {
+  padding: 0 40px;
+  line-height: 53px;
+}
+
+/* ─── Forms / Inputs ─────────────────────── */
+[class*="template02-"] .form-group {
+  margin-bottom: 16px;
+}
+
+[class*="template02-"] .form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+
+[class*="template02-"] .form-control {
+  width: 100%;
+  padding: 8px 12px;
+  min-height: 40px;
+  font-size: 16px;
+  font-family: 'Inter', var(--font-body);
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid rgba(226, 228, 232, 0.8);
+  border-radius: 2px;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+[class*="template02-"] .form-control:focus {
+  outline: none;
+  border-color: #3c3f9b;
+}
+
+[class*="template02-"] .form-control::placeholder {
+  color: #666666;
+}
+
+[class*="template02-"] textarea.form-control {
+  resize: vertical;
+  min-height: 120px;
+}
+
+[class*="template02-"] .select-wrapper {
+  position: relative;
+}
+
+[class*="template02-"] .select-wrapper::after {
+  content: '▼';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: #666666;
+  pointer-events: none;
+}
+
+[class*="template02-"] .select-wrapper select {
+  appearance: none;
+  padding-right: 2.25rem;
+}
+
+/* ─── Badges ─────────────────────────────── */
+[class*="template02-"] .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 9999px;
+  border: 1px solid rgba(226, 228, 232, 0.8);
+  background-color: #ffffff;
+  color: #4b5563;
+}
+
+[class*="template02-"] .badge-accent {
+  background-color: #3c3f9b;
+  color: #ffffff;
+  border-color: #3c3f9b;
+}
+
+/* ─── Utility ────────────────────────────── */
+[class*="template02-"] .mt-4 { margin-top: 16px; }
+[class*="template02-"] .mt-6 { margin-top: 24px; }
+[class*="template02-"] .mt-8 { margin-top: 32px; }
 
 /* =============================================
    Animations - Keyframes

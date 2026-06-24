@@ -1,0 +1,117 @@
+/* ─── Hero ──────────────────────────────────────────────────────── */
+.template02-hero {
+  position: relative;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.template02-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.template02-hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+}
+
+.template02-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  padding: 48px 24px;
+}
+
+.template02-hero-content h1 {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: #ffffff;
+}
+
+.template02-hero-content p {
+  font-size: 20px;
+  opacity: 0.9;
+  color: #ffffff;
+}
+
+/* ─── Section ───────────────────────────────────────────────────── */
+.template02-section {
+  padding: 64px 0;
+}
+
+/* ─── Filter Bar ────────────────────────────────────────────────── */
+.template02-filter-bar {
+  background-color: #ffffff;
+  border: 1px solid rgba(226,228,232,0.8);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.template02-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  align-items: end;
+}
+
+/* ─── Properties Grid ───────────────────────────────────────────── */
+.template02-properties-grid {
+  /* UIkit grid gerencia o layout via uk-grid + uk-child-width-* */
+}
+
+/* ─── Pagination ────────────────────────────────────────────────── */
+.template02-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.template02-pagination a {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  border: 1px solid rgba(226,228,232,0.8);
+  font-size: 14px;
+  text-decoration: none;
+  color: #000000;
+  transition: background-color 150ms, color 150ms;
+}
+
+.template02-pagination a:hover,
+.template02-pagination a.active {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .template02-filter-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .template02-hero { min-height: 250px; }
+  .template02-hero-content h1 { font-size: 28px; }
+  .template02-hero-content p { font-size: 16px; }
+  .template02-section { padding: 32px 0; }
+  .template02-filter-grid { grid-template-columns: 1fr; }
+}

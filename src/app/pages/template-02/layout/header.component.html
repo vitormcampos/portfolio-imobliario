@@ -1,0 +1,130 @@
+<header class="template02-header" [class.template02-header--scrolled]="isScrolled">
+  <!-- Top bar -->
+  <div class="template02-header-top">
+    <div class="container template02-header-top-inner">
+      <div class="template02-header-contacts">
+        <a [href]="'tel:' + site.telefone" [attr.aria-label]="'Ligar para ' + site.telefone">
+          <i data-feather="phone" aria-hidden="true"></i>
+          {{ site.telefone }}
+        </a>
+        <a [href]="'tel:' + site.celular" [attr.aria-label]="'Ligar para ' + site.celular">
+          <i data-feather="smartphone" aria-hidden="true"></i>
+          {{ site.celular }}
+        </a>
+        <a [href]="'mailto:' + site.email" aria-label="Enviar email">
+          <i data-feather="mail" aria-hidden="true"></i>
+          {{ site.email }}
+        </a>
+      </div>
+      <div class="template02-header-lang">
+        <span>PT</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main bar -->
+  <div class="template02-header-main">
+    <div class="container template02-header-main-inner">
+      <a routerLink="/template-02" class="template02-logo" (click)="closeMobileMenu()" [attr.aria-label]="site.nome + ' — Página inicial'">
+        <img
+          [src]="site.logo"
+          [alt]="site.nome + ' - Logo'"
+          class="template02-logo-img"
+          (error)="onLogoError($event)"
+        />
+        <span class="template02-logo-text">{{ site.nome }}</span>
+      </a>
+
+      <nav class="template02-nav-desktop" aria-label="Navegação principal">
+        <a
+          routerLink="/template-02"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}"
+          (click)="closeMobileMenu()"
+        >Início</a>
+        <a
+          routerLink="/template-02/imoveis"
+          routerLinkActive="active"
+          (click)="closeMobileMenu()"
+        >Imóveis</a>
+        <a
+          routerLink="/template-02/contato"
+          routerLinkActive="active"
+          (click)="closeMobileMenu()"
+        >Contato</a>
+      </nav>
+
+      <button
+        class="template02-nav-mobile-toggle"
+        (click)="toggleMobileMenu()"
+        [attr.aria-label]="isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'"
+        [attr.aria-expanded]="isMobileMenuOpen"
+      >
+        <i data-feather="menu" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile overlay -->
+  <div
+    class="template02-nav-overlay"
+    [class.template02-nav-overlay--visible]="isMobileMenuOpen"
+    (click)="closeMobileMenu()"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Mobile nav drawer -->
+  <nav
+    class="template02-nav-mobile"
+    [class.template02-nav-mobile--open]="isMobileMenuOpen"
+    aria-label="Navegação mobile"
+  >
+    <button class="template02-nav-mobile-close" (click)="closeMobileMenu()" aria-label="Fechar menu">
+      <i data-feather="x" aria-hidden="true"></i>
+    </button>
+    <ul>
+      <li>
+        <a routerLink="/template-02" (click)="closeMobileMenu()">
+          <i data-feather="home" aria-hidden="true"></i>
+          Início
+        </a>
+      </li>
+      <li>
+        <a routerLink="/template-02/imoveis" (click)="closeMobileMenu()">
+          <i data-feather="grid" aria-hidden="true"></i>
+          Imóveis
+        </a>
+      </li>
+      <li>
+        <a routerLink="/template-02/contato" (click)="closeMobileMenu()">
+          <i data-feather="phone" aria-hidden="true"></i>
+          Contato
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Mobile bottom nav bar -->
+<nav class="template02-nav-bottom" aria-label="Navegação mobile inferior">
+  <ul>
+    <li>
+      <a routerLink="/template-02" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <i data-feather="home" aria-hidden="true"></i>
+        <span>Início</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/template-02/imoveis" routerLinkActive="active">
+        <i data-feather="grid" aria-hidden="true"></i>
+        <span>Imóveis</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/template-02/contato" routerLinkActive="active">
+        <i data-feather="phone" aria-hidden="true"></i>
+        <span>Contato</span>
+      </a>
+    </li>
+  </ul>
+</nav>

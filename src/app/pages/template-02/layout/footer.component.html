@@ -1,0 +1,67 @@
+<footer class="template02-footer">
+  <div class="container">
+    <div class="template02-footer-grid">
+      <!-- Brand column -->
+      <div class="template02-footer-brand">
+        <div class="template02-footer-logo">
+          <img
+            [src]="site.logo"
+            [alt]="site.nome + ' - Logo'"
+            class="template02-footer-logo-img"
+            (error)="onLogoError($event)"
+          />
+          <span>{{ site.nome }}</span>
+        </div>
+        <p>{{ site.sobre }}</p>
+        <div class="template02-footer-social">
+          <a [href]="site.urlInstagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <i data-feather="instagram" aria-hidden="true"></i>
+          </a>
+          <a [href]="site.urlFacebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <i data-feather="facebook" aria-hidden="true"></i>
+          </a>
+          <a [href]="'mailto:' + site.email" aria-label="Email">
+            <i data-feather="mail" aria-hidden="true"></i>
+          </a>
+          <a [href]="site.urlWhatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <i data-feather="message-circle" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div>
+        <h4 class="template02-footer-title">Navegação</h4>
+        <ul class="template02-footer-links">
+          <li><a routerLink="/template-02">Início</a></li>
+          <li><a routerLink="/template-02/imoveis">Imóveis</a></li>
+          <li><a routerLink="/template-02/contato">Contato</a></li>
+          <li><a routerLink="/template-02/termos">Termos de Uso</a></li>
+          <li><a routerLink="/template-02/privacidade">Privacidade</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 class="template02-footer-title">Contato</h4>
+        <ul class="template02-footer-links">
+          <li><a [href]="'tel:' + site.telefone">{{ site.telefone }}</a></li>
+          <li><a [href]="'tel:' + site.celular">{{ site.celular }}</a></li>
+          <li><a [href]="'mailto:' + site.email">{{ site.email }}</a></li>
+        </ul>
+      </div>
+
+      <!-- Address -->
+      <div>
+        <h4 class="template02-footer-title">Endereço</h4>
+        <ul class="template02-footer-links">
+          <li>{{ site.endereco }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="template02-footer-bottom">
+      <p>{{ site.nome }} &copy; 2026. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>

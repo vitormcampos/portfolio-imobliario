@@ -1,0 +1,143 @@
+<app-template02-header />
+<main id="main-content">
+  <!-- Hero -->
+  <section class="template02-hero" style="min-height: 250px;">
+    <div class="template02-hero-bg" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80');" role="img" aria-label="Escritório moderno"></div>
+    <div class="template02-hero-content">
+      <h1>Fale Conosco</h1>
+      <p>Estamos prontos para ajudar você a encontrar o imóvel ideal</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="template02-section" appReveal>
+    <div class="container">
+      <div class="template02-contact-grid">
+        <!-- Form -->
+        <div>
+          <h2 style="margin-bottom: 8px;">Envie uma mensagem</h2>
+          <p style="color: #666666; margin-bottom: 24px;">Preencha o formulário abaixo e nossa equipe entrará em contato o mais breve possível.</p>
+          <form (submit)="submitForm($event)">
+            <div class="form-group">
+              <label class="form-label">Nome completo</label>
+              <input type="text" class="form-control" placeholder="Digite seu nome" [(ngModel)]="contactForm.nome" name="nome" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label">E-mail</label>
+                <input type="email" class="form-control" placeholder="seu@email.com" [(ngModel)]="contactForm.email" name="email" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Telefone</label>
+                <input type="tel" class="form-control" placeholder="(65) 99999-9999" [(ngModel)]="contactForm.telefone" name="telefone" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assunto</label>
+              <div class="select-wrapper">
+                <select class="form-control" [(ngModel)]="contactForm.assunto" name="assunto">
+                  <option>Quero comprar um imóvel</option>
+                  <option>Quero vender um imóvel</option>
+                  <option>Quero alugar um imóvel</option>
+                  <option>Dúvidas em geral</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mensagem</label>
+              <textarea class="form-control" placeholder="Como podemos ajudar?" [(ngModel)]="contactForm.mensagem" name="mensagem" rows="4"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-large">Enviar Mensagem</button>
+          </form>
+
+          <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(226,228,232,0.8);">
+            <h3 style="margin-bottom: 16px;">Ou fale diretamente</h3>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+              <a [href]="site.urlWhatsapp" class="btn btn-phone" style="width: auto; flex: 1; min-width: 200px;" target="_blank" rel="noopener">
+                <i data-feather="message-circle" aria-hidden="true"></i>
+                WhatsApp
+              </a>
+              <a [href]="'tel:' + site.telefone" class="btn btn-accent" style="width: auto; flex: 1; min-width: 200px;">
+                <i data-feather="phone" aria-hidden="true"></i>
+                Ligar Agora
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="template02-contact-info">
+          <h3>Informações de contato</h3>
+
+          <div class="template02-contact-info-item">
+            <i data-feather="map-pin" aria-hidden="true"></i>
+            <div>
+              <strong>Endereço</strong>
+              {{ site.endereco }}
+            </div>
+          </div>
+
+          <div class="template02-contact-info-item">
+            <i data-feather="phone" aria-hidden="true"></i>
+            <div>
+              <strong>Telefones</strong>
+              <a [href]="'tel:' + site.telefone" style="display: block; color: #3c3f9b;">{{ site.telefone }}</a>
+              <a [href]="'tel:' + site.celular" style="display: block; color: #3c3f9b;">{{ site.celular }}</a>
+            </div>
+          </div>
+
+          <div class="template02-contact-info-item">
+            <i data-feather="mail" aria-hidden="true"></i>
+            <div>
+              <strong>E-mail</strong>
+              <a [href]="'mailto:' + site.email" style="color: #3c3f9b;">{{ site.email }}</a>
+            </div>
+          </div>
+
+          <div class="template02-contact-info-item">
+            <i data-feather="clock" aria-hidden="true"></i>
+            <div>
+              <strong>Horário de atendimento</strong>
+              Segunda a Sexta: 8h às 18h<br>
+              Sábado: 8h às 12h
+            </div>
+          </div>
+
+          <div class="template02-contact-info-item">
+            <i data-feather="shield" aria-hidden="true"></i>
+            <div>
+              <strong>Documentos</strong>
+              CNPJ: 01.890.599/0001-49<br>
+              CRECI: J 394
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Dynamic Map -->
+      <div class="template02-contact-map">
+        <iframe
+          [src]="getMapUrl()"
+          width="100%"
+          height="100%"
+          style="border: 0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer"
+          title="Localização da {{ site.nome }}"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast -->
+  <div class="template02-toast" [class.template02-toast--visible]="toastVisible" role="alert" aria-live="polite">
+    <i data-feather="check-circle" aria-hidden="true"></i>
+    <span>Mensagem enviada com sucesso! Entraremos em contato em breve.</span>
+  </div>
+</main>
+
+<app-template02-footer />
+<app-template02-whatsapp-button />

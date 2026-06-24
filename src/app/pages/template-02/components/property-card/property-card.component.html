@@ -1,0 +1,49 @@
+<article class="template02-card">
+  <div style="position: relative;">
+    <img
+      [src]="imovel.fotos[0] || 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80'"
+      [alt]="imovel.titulo"
+      class="template02-card-img"
+      loading="lazy"
+    />
+    <span
+      class="template02-badge"
+      [class.template02-badge--accent]="!isAluguel()"
+      [class.template02-badge--rent]="isAluguel()"
+      style="position: absolute; top: 12px; left: 12px;"
+    >
+      {{ isAluguel() ? 'Aluguel' : 'Venda' }}
+    </span>
+    <span
+      *ngIf="imovel.destaque"
+      class="template02-badge template02-badge--destaque"
+      style="position: absolute; top: 12px; right: 12px;"
+    >
+      Destaque
+    </span>
+  </div>
+  <div class="template02-card-body">
+    <h3 class="template02-card-title">{{ imovel.titulo }}</h3>
+    <p class="template02-card-text">{{ imovel.descricao | slice:0:120 }}{{ imovel.descricao.length > 120 ? '...' : '' }}</p>
+    <div class="template02-card-meta">
+      <span *ngIf="imovel.quartos > 0">
+        <i data-feather="home" aria-hidden="true"></i>
+        {{ imovel.quartos }} qts
+      </span>
+      <span>
+        <i data-feather="maximize" aria-hidden="true"></i>
+        {{ imovel.area }} m²
+      </span>
+      <span *ngIf="imovel.vagas > 0">
+        <i data-feather="truck" aria-hidden="true"></i>
+        {{ imovel.vagas }} vagas
+      </span>
+    </div>
+    <div class="template02-card-price">
+      {{ imovel.preco | currency:'BRL':'symbol':'1.0-0' }}{{ isAluguel() ? '/mês' : '' }}
+    </div>
+    <a [routerLink]="'/template-02/imovel/' + imovel.id" class="btn btn-ghost mt-4" style="width: 100%;">
+      Ver Detalhes
+    </a>
+  </div>
+</article>
