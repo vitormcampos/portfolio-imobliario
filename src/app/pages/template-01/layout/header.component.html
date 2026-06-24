@@ -10,7 +10,6 @@
         class="header__logo-img"
         (error)="onLogoError($event)"
       />
-      <span class="header__logo-text">{{ site.nome || 'Visa Imóveis' }}</span>
     </a>
 
     <nav class="header__nav" [class.header__nav--open]="isMobileMenuOpen" aria-label="Navegação principal">
